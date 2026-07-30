@@ -258,18 +258,18 @@ async fn main() {
         while timestepper.step() {
             game_logic.update_position_with_input(&input);
             game_logic.step_physics();
+            // A few times per second, flip every character between its two frames.
+
+            if frame.is_multiple_of(enemy_animation_length) {
+                current_frame_index =
+                    ((frame / enemy_animation_length) % frames_of_box_guy.len() as u32) as usize;
+                enemy_node.set_sprite_frame(&sheet, frames_of_box_guy[current_frame_index]);
+            }
+            frame = frame.wrapping_add(1);
         }
 
         // render sprites
         player.set_position(game_logic.get_player_position());
-        // A few times per second, flip every character between its two frames.
-
-        if frame.is_multiple_of(enemy_animation_length) {
-            current_frame_index =
-                ((frame / enemy_animation_length) % frames_of_box_guy.len() as u32) as usize;
-            enemy_node.set_sprite_frame(&sheet, frames_of_box_guy[current_frame_index]);
-        }
-        frame = frame.wrapping_add(1);
 
         // Draw UI
         window.draw_ui(|ctx| {
