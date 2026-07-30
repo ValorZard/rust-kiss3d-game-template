@@ -1,5 +1,3 @@
-use std::time::Duration;
-
 use kiss3d::glamx::Vec2;
 use rapier2d::{control::KinematicCharacterController, prelude::*};
 
@@ -261,11 +259,6 @@ impl GameLogic {
             .expect("Player should exist here")
     }
 
-    pub fn setup_game(&mut self) {
-        // Easier way to do this is to just totally reset all state
-        *self = Self::new();
-    }
-
     // returns position in game space not physics space
     pub fn update_position_with_input(&mut self, input: &MoveInputState) -> Vec2 {
         let (handle, controller) = self.get_player_physics_data();
@@ -329,15 +322,6 @@ impl GameLogic {
         self.physics.bodies[handle].set_next_kinematic_translation(new_pos);
         let new_pixel_position = convert_vec2_physics_to_pixel(new_pos);
         new_pixel_position
-    }
-
-    /// `new_position` is in game (pixel) space, like every other public position.
-    pub fn update_position_with_vec(&mut self, new_position: Vec2) -> Vec2 {
-        let (handle, _) = self.get_player_physics_data();
-        let handle = handle.clone();
-        let body = &mut self.physics.bodies[handle];
-        body.set_next_kinematic_translation(convert_vec2_pixel_to_physics(new_position));
-        new_position
     }
 
     /// Returns position in game (pixel) space, not physics space.

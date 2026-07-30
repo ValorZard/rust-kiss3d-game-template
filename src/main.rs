@@ -130,7 +130,7 @@ impl MyCamera2d {
 }
 
 impl Camera2d for MyCamera2d {
-    fn handle_event(&mut self, canvas: &Canvas, event: &WindowEvent) {
+    fn handle_event(&mut self, _canvas: &Canvas, event: &WindowEvent) {
         let scale = 1.0; // canvas.scale_factor();
 
         match *event {
