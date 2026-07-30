@@ -8,17 +8,17 @@ pub const GAME_TIME_DELTA: f32 = GAME_TIME_STEP.as_secs_f32();
 // max time accumulated between frames should be 0.25 seconds
 pub const MAX_TIME_BETWEEN_STEPS: SignedDuration = SignedDuration::milliseconds(250);
 
-pub struct FixedTimestepper {
+pub struct FixedTimeStepper {
     last_checked_time: OffsetDateTime,
     game_time_step: Duration,
-    // Wall-clock time observed since the last tick was consumed.
+    // Wall-clock time observed since the last tick was consumed. 
     accumulator: SignedDuration,
     last_frame_time: SignedDuration,
     // has to be bigger than game_time_step
     max_time_between_steps: SignedDuration,
 }
 
-impl FixedTimestepper {
+impl FixedTimeStepper {
     pub fn new(game_time_step: Duration, max_time_between_steps: SignedDuration) -> Self {
         Self {
             last_checked_time: OffsetDateTime::now_utc(),
@@ -29,7 +29,7 @@ impl FixedTimestepper {
         }
     }
 
-    /// Returns true once per pending tick, so callers drain it with `while timestepper.step() { .. }`.
+    /// Returns true once per pending tick, so callers drain it with `while timestepper.step() { .. }`. 
     pub fn step(&mut self) -> bool {
         // This might result in a runaway effect if the amount of time we're getting isn't enough to drain
         // which is why we have max_time_between_steps
@@ -44,7 +44,7 @@ impl FixedTimestepper {
         };
 
         self.last_frame_time = frame_time;
-
+        
         if self.accumulator >= self.game_time_step {
             self.accumulator -= self.game_time_step;
             true
@@ -58,7 +58,7 @@ impl FixedTimestepper {
     }
 }
 
-impl Default for FixedTimestepper {
+impl Default for FixedTimeStepper {
     fn default() -> Self {
         Self::new(GAME_TIME_STEP, MAX_TIME_BETWEEN_STEPS)
     }

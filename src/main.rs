@@ -1,7 +1,7 @@
 use crate::{
     asset_fetch::fetch_asset_bytes,
     game::{ENEMY_POSITION, GameLogic, MoveInputState},
-    timestepper::FixedTimestepper,
+    timestepper::FixedTimeStepper,
 };
 use kiss3d::{egui, prelude::*};
 
@@ -201,7 +201,7 @@ async fn main() {
     enemy_node.set_sprite_frame(&sheet, frames_of_box_guy[current_frame_index]);
 
     // timer stuff
-    let mut timestepper = FixedTimestepper::default();
+    let mut timestepper = FixedTimeStepper::default();
 
     // input state
     let mut input = MoveInputState::default();
