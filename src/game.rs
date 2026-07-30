@@ -3,11 +3,7 @@ use std::time::Duration;
 use kiss3d::glamx::Vec2;
 use rapier2d::{control::KinematicCharacterController, prelude::*};
 
-/// 60 TPS (ish)
-pub const GAME_TIME_STEP_MS: u32 = 17;
-// this is fine to cast as a u64, we know the time step isn't negative
-pub const GAME_TIME_STEP: Duration = Duration::from_millis(GAME_TIME_STEP_MS as u64);
-pub const GAME_TIME_DELTA: f32 = GAME_TIME_STEP.as_secs_f32();
+use crate::timestepper::GAME_TIME_DELTA;
 
 pub const PHYSICS_TO_PIXEL_SCALE: f32 = 50.0; // 1 meter in physics engine equals 50 pixels
 pub const PIXEL_TO_PHYSICS_SCALE: f32 = 1.0 / PHYSICS_TO_PIXEL_SCALE;
@@ -119,9 +115,7 @@ impl GameLogic {
         // TODO: for now, we hardcode left and right side players and require there to be only one of each
         let mut world = hecs::World::new();
         let mut physics = PhysicsWorld::new();
-        // The physics default timestep is 1/60s but the game ticks at 30 TPS;
-        // velocity-driven bodies (projectiles) would move at half speed if the
-        // integration step didn't match the game tick.
+        // Set the physics timestep to the same timestep as our game
         physics.integration_parameters.dt = GAME_TIME_DELTA;
 
         // Distinct starting points on opposite sides, clear of the obstacle (spawned

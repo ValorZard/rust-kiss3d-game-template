@@ -1,12 +1,13 @@
 use crate::{
     asset_fetch::fetch_asset_bytes,
-    game::{ENEMY_POSITION, GAME_TIME_STEP, GameLogic, MoveInputState},
+    game::{ENEMY_POSITION, GameLogic, MoveInputState},
+    timestepper::FixedTimestepper,
 };
 use kiss3d::{egui, prelude::*};
-use time::{Duration, OffsetDateTime};
 
 mod asset_fetch;
 mod game;
+mod timestepper;
 
 /// A 2D camera that can be zoomed and panned.
 #[derive(Copy, Clone, Debug, PartialEq)]
@@ -200,11 +201,7 @@ async fn main() {
     enemy_node.set_sprite_frame(&sheet, frames_of_box_guy[current_frame_index]);
 
     // timer stuff
-    let mut previous_time = OffsetDateTime::now_utc();
-    // deltarune runs on 30 TPS
-    let mut game_time_step_timer = Duration::new(0, 0);
-    // max time accumulated between frames should be 0.25 seconds
-    let max_time_between_frames = Duration::milliseconds(250);
+    let mut timestepper = FixedTimestepper::default();
 
     // input state
     let mut input = MoveInputState::default();
@@ -225,19 +222,6 @@ async fn main() {
 
     let mut frame = 0u32;
     while window.render_2d(&mut scene, &mut camera).await {
-        let current_time = OffsetDateTime::now_utc();
-        // current time in milliseconds
-        let current_time_ms = (current_time.unix_timestamp_nanos() / 1_000_000) as i64;
-        let time_since_last_frame = {
-            let frame_time = current_time - previous_time;
-            if frame_time > max_time_between_frames {
-                max_time_between_frames
-            } else {
-                frame_time
-            }
-        };
-        previous_time = current_time;
-
         // the way OS's poll key inputs mean that there's a frame of waiting before sending in the next key input
         // see: https://stereopsis.com/keyrepeat/
         for event in window.events().iter() {
@@ -271,9 +255,7 @@ async fn main() {
         }
 
         // run actual game logic if we've hit a tick (drain accumulated frames)
-        game_time_step_timer += time_since_last_frame;
-        while game_time_step_timer >= GAME_TIME_STEP {
-            game_time_step_timer -= GAME_TIME_STEP;
+        while timestepper.step() {
             game_logic.update_position_with_input(&input);
             game_logic.step_physics();
         }
@@ -294,7 +276,10 @@ async fn main() {
             egui::Window::new("Kiss3d egui Example")
                 .default_width(300.0)
                 .show(ctx, |ui| {
-                    ui.label(format!("Current Frame Time {}", time_since_last_frame));
+                    ui.label(format!(
+                        "Current Frame Time {}",
+                        timestepper.get_time_since_last_step()
+                    ));
                 });
         });
     }
