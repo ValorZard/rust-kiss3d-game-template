@@ -16,9 +16,11 @@ hecs = "0.11.1"
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 time = "0.3.47"
+rodio = "0.22.2"
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 web-sys = "0.3"
 gloo-net = "0.7.0"
 gloo-timers = { version = "0.4.0", features = ["futures"] }
 time = { version = "0.3.47", features = ["wasm-bindgen"] }
+rodio = { version = "0.22.2", features = ["wasm-bindgen"]}

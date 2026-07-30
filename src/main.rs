@@ -4,6 +4,7 @@ use crate::{
     timestepper::FixedTimeStepper,
 };
 use kiss3d::{egui, prelude::*};
+use rodio::Source;
 
 mod asset_fetch;
 mod game;
@@ -221,6 +222,21 @@ async fn main() {
     }
 
     let mut frame = 0u32;
+
+    // start song
+    let device_sink = rodio::DeviceSinkBuilder::open_default_sink()
+        .expect("should be able to open the default audio device");
+    let song_player = rodio::Player::connect_new(device_sink.mixer());
+    let song_file = fetch_asset_bytes("Just-keep-a-thought-for-me.wav")
+        .await
+        .expect("should have song");
+    // repeat the song forever (you might have to refresh the page to get audio to work)
+    song_player.append(
+        rodio::Decoder::new(std::io::Cursor::new(song_file))
+            .expect("song should be decodable")
+            .repeat_infinite(),
+    );
+
     while window.render_2d(&mut scene, &mut camera).await {
         // the way OS's poll key inputs mean that there's a frame of waiting before sending in the next key input
         // see: https://stereopsis.com/keyrepeat/
