@@ -11,3 +11,9 @@ cargo run
 ```bash
 trunk serve
 ```
+
+## to export to itch.io
+```bash
+# note: you should read this script since you will need to edit certain parameters depending on your project's name.
+./upload_game.sh
+```
