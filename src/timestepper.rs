@@ -11,7 +11,7 @@ pub const MAX_TIME_BETWEEN_STEPS: SignedDuration = SignedDuration::milliseconds(
 pub struct FixedTimeStepper {
     last_checked_time: OffsetDateTime,
     game_time_step: Duration,
-    // Wall-clock time observed since the last tick was consumed. 
+    // Wall-clock time observed since the last tick was consumed.
     accumulator: SignedDuration,
     last_frame_time: SignedDuration,
     // has to be bigger than game_time_step
@@ -29,7 +29,7 @@ impl FixedTimeStepper {
         }
     }
 
-    /// Returns true once per pending tick, so callers drain it with `while timestepper.step() { .. }`. 
+    /// Returns true once per pending tick, so callers drain it with `while timestepper.step() { .. }`.
     pub fn step(&mut self) -> bool {
         // This might result in a runaway effect if the amount of time we're getting isn't enough to drain
         // which is why we have max_time_between_steps
@@ -44,7 +44,7 @@ impl FixedTimeStepper {
         };
 
         self.last_frame_time = frame_time;
-        
+
         if self.accumulator >= self.game_time_step {
             self.accumulator -= self.game_time_step;
             true
