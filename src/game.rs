@@ -11,9 +11,11 @@ pub const GAME_TIME_DELTA: f32 = GAME_TIME_STEP.as_secs_f32();
 
 pub const PHYSICS_TO_PIXEL_SCALE: f32 = 50.0; // 1 meter in physics engine equals 50 pixels
 pub const PIXEL_TO_PHYSICS_SCALE: f32 = 1.0 / PHYSICS_TO_PIXEL_SCALE;
-pub const PLAYER_PHYSICS_RADIUS: f32 = 1.0; // in physics scale
 pub const PLAYER_GAME_WIDTH: f32 = 10.; // game scale
 pub const PLAYER_GAME_HEIGHT: f32 = 10.;
+pub const PLAYER_GAME_RECTANGLE_EXTENTS: GameRectangleExtents =
+    GameRectangleExtents::new(PLAYER_GAME_WIDTH, PLAYER_GAME_HEIGHT);
+
 pub const PLAYER_TRAPPED_BOX_WIDTH: f32 = 100.;
 pub const PLAYER_TRAPPED_BOX_HEIGHT: f32 = 50.;
 pub const PLAYER_TRAPPED_BOX_WALL_WIDTH: f32 = 10.;
@@ -21,7 +23,6 @@ pub const PLAYER_TRAPPED_BOX_WALL_WIDTH: f32 = 10.;
 pub const PLAYER_STARTING_POSITION: Vec2 = Vec2::new(0., 0.);
 /// Player movement speed in game (pixel) space, i.e. pixels per second.
 pub const PLAYER_SPEED: f32 = 100.;
-pub const PLAYER_GAME_RECTANGLE_EXTENTS: GameRectangleExtents = GameRectangleExtents::new(10., 10.);
 /// Where the enemy sits in game (pixel) space; projectiles spawn from here.
 pub const ENEMY_POSITION: Vec2 = Vec2::new(0.0, 70.0);
 
