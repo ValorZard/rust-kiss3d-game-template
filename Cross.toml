@@ -1,6 +1,8 @@
-# add linux dependencies for rodio/cpal
+# add linux dependencies for rodio/cpal, and install the wild linker
 [target.x86_64-unknown-linux-gnu]
 pre-build = [
     "dpkg --add-architecture $CROSS_DEB_ARCH",
-    "apt-get update && apt-get install --assume-yes --no-install-recommends pkg-config libasound2-dev:$CROSS_DEB_ARCH",
+    "apt-get update && apt-get install --assume-yes --no-install-recommends clang pkg-config libasound2-dev:$CROSS_DEB_ARCH curl",
+    "curl -sL https://github.com/wild-linker/wild/releases/download/0.9.0/wild-linker-0.9.0-x86_64-unknown-linux-gnu.tar.gz | tar -xzf - -C /usr/local/bin --strip-components=1 wild-linker-0.9.0-x86_64-unknown-linux-gnu/wild",
+    "chmod +x /usr/local/bin/wild",
 ]
